@@ -1,0 +1,8 @@
+[package]
+name = "latest_npm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+ureq = { version = "2.9", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
