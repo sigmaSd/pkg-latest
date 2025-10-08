@@ -1,7 +1,16 @@
 [package]
-name = "latest_npm"
+name = "pkg-latest"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
+description = "Resolve latest versions of npm and jsr packages"
+license = "MIT"
+repository = "https://github.com/yourusername/pkg-latest"
+keywords = ["npm", "jsr", "deno", "version", "package"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "latest"
+path = "src/main.rs"
 
 [dependencies]
 ureq = { version = "2.9", features = ["json"] }
