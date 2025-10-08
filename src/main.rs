@@ -19,15 +19,19 @@ struct JsrPackageInfo {
 
 fn get_npm_latest_version(package_name: &str) -> Result<String, Box<dyn std::error::Error>> {
     let url = format!("https://registry.npmjs.org/{}", package_name);
-    let response = ureq::get(&url).set("Accept", "application/json").call()?;
-    let package_info: NpmPackageInfo = response.into_json()?;
+    let mut response = ureq::get(&url)
+        .header("Accept", "application/json")
+        .call()?;
+    let package_info: NpmPackageInfo = response.body_mut().read_json()?;
     Ok(package_info.dist_tags.latest)
 }
 
 fn get_jsr_latest_version(package_name: &str) -> Result<String, Box<dyn std::error::Error>> {
     let url = format!("https://jsr.io/{}/meta.json", package_name);
-    let response = ureq::get(&url).set("Accept", "application/json").call()?;
-    let package_info: JsrPackageInfo = response.into_json()?;
+    let mut response = ureq::get(&url)
+        .header("Accept", "application/json")
+        .call()?;
+    let package_info: JsrPackageInfo = response.body_mut().read_json()?;
     Ok(package_info.latest)
 }
 
