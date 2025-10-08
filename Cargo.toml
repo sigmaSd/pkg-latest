@@ -1,10 +1,10 @@
 [package]
 name = "pkg-latest"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2024"
 description = "Resolve latest versions of npm and jsr packages"
 license = "MIT"
-repository = "https://github.com/yourusername/pkg-latest"
+repository = "https://github.com/sigmaSd/pkg-latest"
 keywords = ["npm", "jsr", "deno", "version", "package"]
 categories = ["command-line-utilities", "development-tools"]
 
