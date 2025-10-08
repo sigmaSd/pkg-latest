@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use std::io::{self, Read};
+use std::env;
 
 #[derive(Deserialize)]
 struct NpmPackageInfo {
@@ -12,36 +12,63 @@ struct DistTags {
     latest: String,
 }
 
-fn get_latest_version(package_name: &str) -> Result<String, Box<dyn std::error::Error>> {
+#[derive(Deserialize)]
+struct JsrPackageInfo {
+    latest: String,
+}
+
+fn get_npm_latest_version(package_name: &str) -> Result<String, Box<dyn std::error::Error>> {
     let url = format!("https://registry.npmjs.org/{}", package_name);
-
     let response = ureq::get(&url).set("Accept", "application/json").call()?;
-
     let package_info: NpmPackageInfo = response.into_json()?;
     Ok(package_info.dist_tags.latest)
 }
 
+fn get_jsr_latest_version(package_name: &str) -> Result<String, Box<dyn std::error::Error>> {
+    let url = format!("https://jsr.io/{}/meta.json", package_name);
+    let response = ureq::get(&url).set("Accept", "application/json").call()?;
+    let package_info: JsrPackageInfo = response.into_json()?;
+    Ok(package_info.latest)
+}
+
 fn main() {
-    let mut input = String::new();
-    io::stdin()
-        .read_to_string(&mut input)
-        .expect("Failed to read from stdin");
+    let args: Vec<String> = env::args().collect();
 
-    let input = input.trim();
+    if args.len() < 2 {
+        eprintln!("Usage: {} <npm:package|jsr:package>", args[0]);
+        std::process::exit(1);
+    }
 
-    // Assume input is npm:package_name
+    let input = &args[1];
+
     if let Some(package_name) = input.strip_prefix("npm:") {
-        match get_latest_version(package_name) {
+        match get_npm_latest_version(package_name) {
             Ok(version) => {
                 println!("npm:{}@{}", package_name, version);
             }
             Err(e) => {
-                eprintln!("Error: Failed to get version for {}: {}", package_name, e);
+                eprintln!(
+                    "Error: Failed to get npm version for {}: {}",
+                    package_name, e
+                );
+                std::process::exit(1);
+            }
+        }
+    } else if let Some(package_name) = input.strip_prefix("jsr:") {
+        match get_jsr_latest_version(package_name) {
+            Ok(version) => {
+                println!("jsr:{}@{}", package_name, version);
+            }
+            Err(e) => {
+                eprintln!(
+                    "Error: Failed to get jsr version for {}: {}",
+                    package_name, e
+                );
                 std::process::exit(1);
             }
         }
     } else {
-        eprintln!("Error: Input must start with 'npm:'");
+        eprintln!("Error: Input must start with 'npm:' or 'jsr:'");
         std::process::exit(1);
     }
 }
