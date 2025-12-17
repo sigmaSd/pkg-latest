@@ -16,10 +16,13 @@ cargo build --release
 
 ## Usage
 
-`pkg-latest` takes a package specifier (with `npm:` or `jsr:` prefix) and outputs the same specifier with the latest version appended.
+`pkg-latest` takes a package specifier (with optional `npm:` or `jsr:` prefix) and outputs the same specifier with the latest version appended. If no prefix is provided, it defaults to `npm:`.
 
 ```bash
 latest npm:@google/gemini-cli
+# Output: npm:@google/gemini-cli@1.2.3
+
+latest @google/gemini-cli
 # Output: npm:@google/gemini-cli@1.2.3
 
 latest jsr:@sigma/bisect

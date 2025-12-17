@@ -114,8 +114,15 @@ fn main() {
             }
         }
     } else {
-        eprintln!("Error: Input must start with 'npm:' or 'jsr:'");
-        std::process::exit(1);
+        match get_npm_latest_version(input) {
+            Ok(result) => {
+                println!("{}", result);
+            }
+            Err(e) => {
+                eprintln!("Error: Failed to get npm version for {}: {}", input, e);
+                std::process::exit(1);
+            }
+        }
     }
 }
 
